@@ -11,9 +11,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h> 
-#include "oscpack/osc/OscOutboundPacketStream.h"
-#include "oscpack/osc/OscReceivedElements.h"
-#include "oscpack/osc/OscPrintReceivedElements.h"
 void error(char* message) {
   perror(message);
   exit(0);
@@ -72,7 +69,9 @@ class UdpReceiver {
     int socketFile;
     int port;
     int bufferSize;
-    int socketOptions;
+    int socketOptionBroadcast;
+    int socketOptionReuseAddress;
+    int socketOptionReusePort;
     char* buffer;
     char* clientIP;
     struct sockaddr_in serverAddress;
@@ -88,11 +87,23 @@ class UdpReceiver {
       this->socketFile = socket(AF_INET, SOCK_DGRAM, 0);
       if(this->socketFile < 0) error("ERROR: Could not open socket\n");
       // speedhax
-      this->socketOptions = 1;
+      this->socketOptionBroadcast = 1;
+      this->socketOptionReuseAddress = 1;
+      this->socketOptionReusePort = 1;
       setsockopt( this->socketFile,
                   SOL_SOCKET,
                   SO_BROADCAST,
-                  (const void*)&this->socketOptions,
+                  (const void*)&this->socketOptionBroadcast,
+                  sizeof(int));
+      setsockopt( this->socketFile,
+                  SOL_SOCKET,
+                  SO_REUSEADDR,
+                  (const void*)&this->socketOptionReuseAddress,
+                  sizeof(int));
+      setsockopt( this->socketFile,
+                  SOL_SOCKET,
+                  SO_REUSEPORT,
+                  (const void*)&this->socketOptionReusePort,
                   sizeof(int));
       // construct server address
       bzero((char*)&this->serverAddress, sizeof(this->serverAddress));
