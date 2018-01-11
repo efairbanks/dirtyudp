@@ -7,8 +7,8 @@
 // or set sender to false to build an example UDP server.         //
 // -------------------------------------------------------------- //
 void udpCallback(char* packet, int packetSize, void* data) {
-  for(int i=0; i<packetSize; i++) printf("%c", packet[i]);
-  printf("\n");
+  for(int i=0; i<packetSize; i++) fprintf(stdout,"%c", packet[i]);
+  fflush(stdout);
 }
 int main(int argc, char** argv) {
   #ifdef SEND
