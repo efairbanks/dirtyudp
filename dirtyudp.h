@@ -15,6 +15,9 @@ void error(char* message) {
   perror(message);
   exit(0);
 }
+void warning(char* message) {
+  return; // idk do some warning stuff here prolly
+}
 class UdpSender {
   private:
     int socketFile;
@@ -132,10 +135,10 @@ class UdpReceiver {
                                     sizeof(this->clientAddress.sin_addr.s_addr),
                                     AF_INET);
       if(this->client == NULL)
-        error("ERROR: Error getting client host info");
+        warning("ERROR: Error getting client host info");
       this->clientIP = inet_ntoa(this->clientAddress.sin_addr);
       if(this->clientIP == NULL)
-        error("ERROR: Error getting client IP.");
+        warning("ERROR: Error getting client IP.");
       // ----------------------------- //
       // --- Some old info logging --- //
       // ----------------------------- //
